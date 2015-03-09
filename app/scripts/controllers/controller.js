@@ -25,6 +25,15 @@ angular.module('main').controller('ProcCtrl', function ($scope, $http, $filter, 
       alignTicks: false
 
     },
+    subtitle: {
+      text: '*Click to view detail',
+      align: 'left',
+      x: -10,
+      style:{
+        fontStyle: 'italic',
+        fontSize: '10px'
+      }
+    },
     legend: {
       enabled: true
     },
@@ -436,6 +445,15 @@ angular.module('main').controller('FileCtrl', function ($scope, $http, $filter, 
       alignTicks: false
 
     },
+    subtitle: {
+      text: '*Click to view detail',
+      align: 'left',
+      x: -10,
+      style:{
+        fontStyle: 'italic',
+        fontSize: '10px'
+      }
+    },
     legend: {
       enabled: true
     },
@@ -499,10 +517,10 @@ angular.module('main').controller('FileCtrl', function ($scope, $http, $filter, 
       }
     },
     navigator: {
-      enabled: false
+      enabled: true
     },
     scrollbar: {
-      enabled: false
+      enabled: true
     },
     rangeSelector: {
       enabled: false
