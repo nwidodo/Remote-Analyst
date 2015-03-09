@@ -1,0 +1,171 @@
+<div>
+  <div ng-show="!showContent">Loading...</div>
+  <div ng-show="showError" ng-cloak><span ng-bind-html="errorMsg | to_trusted"/></div>
+  <table width="98%" ng-cloak ng-show="showContent">
+    <tr>
+      <td colspan="2">
+        <div class="panel panel-default" style="margin:0">
+          <div class="panel-heading" style="padding: 2px 15px;">
+            <table width="100%">
+              <tr>
+                <td><h5>{{System}}.{{FileName || "N/A" }}</h5></td>
+                <td align="right"><a class="btn btn-success btn-sm" href ng-click="downloadFile()"
+                                     style="font-size: 10px"><i class="fa fa-file-excel-o"></i> Export to Excel</a></td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td valign="top" width="300px">
+        <div class="panel panel-default" style="margin-bottom: 0px;white-space: nowrap;">
+          <div class="panel-body" >
+
+            <table width="100%">
+              <tr>
+                <td valign=top style="font-weight:bold">From</td>
+                <td valign=top>:</td>
+                <td valign=top>{{FromTimestampStr | date:'MMM d yyyy, HH:mm'}}</td>
+              </tr>
+              <tr >
+                <td valign=top style="font-weight:bold">To</td>
+                <td valign=top>:</td>
+                <td valign=top>{{ToTimestampStr | date:'MMM d yyyy, HH:mm'}}</td>
+              </tr>
+              <tr><td colspan="3"><hr></td> </tr>
+              <tr>
+                <td valign=top style="font-weight:bold">Reads</td>
+                <td valign=top>:</td>
+                <td valign=top>{{Reads | number}}/sec</td>
+              </tr>
+              <tr>
+                <td valign=top style="font-weight:bold">Writes</td>
+                <td valign=top>:</td>
+                <td valign=top>{{Writes|number}}/sec</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">Time/IO</td>
+                <td>:</td>
+                <td>{{TimePerIO|number}} milliseconds</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">Lock Wait</td>
+                <td>:</td>
+                <td>{{LockWait|number}}</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">Rec. Accessed</td>
+                <td>:</td>
+                <td>{{RecordsAccessed|number}}</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">Rec. Used</td>
+                <td>:</td>
+                <td>{{RecordsUsed|number}}</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">Openers</td>
+                <td>:</td>
+                <td>{{Openers|number}}</td>
+              </tr>
+              <tr>
+                <td style="font-weight:bold">Opens</td>
+                <td>:</td>
+                <td>{{Opens|number}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </td>
+      <td valign="top">
+        <div class="panel panel-default" style="margin-bottom: 0px">
+          <div class="panel-body" style="padding: 5px 15px">
+            <table width="98%">
+              <tr>
+                <td align="left" width="20%">
+                  <ul class="pager" style="text-align: left; margin:5px 0;">
+                    <li class="previous" ng-class="{'previous disabled': firstIntv}"><a href style="padding: 2px 5px"
+                                                                    ng-click="goIntv($event,-1)">←
+                      Prev</a>
+                    </li>
+                    </ul>
+                </td>
+                <td align="center" width="60%">
+                  Daily Trend: <select style="font-size: 11px; width:120px;padding-left:10px;"
+                          ng-model="selectedDate"
+                          ng-options="cdate as cdate*1000 | date for cdate in AvailableDates" ng-change="goChartDay()"></select>
+                </td>
+                <td align="right" width="20%">
+                  <ul class="pager" style="text-align: right; margin:5px 0;">
+                    <li class="next" ng-class="{'next disabled': lastIntv}"><a href style="padding: 2px 5px"
+                                                                                         ng-click="goIntv($event,1)">Next
+                      →</a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </table>
+
+
+
+
+            <div id="container" style="min-width: 510px; height: 319px; margin: 0 auto"></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table width="100%">
+          <tr>
+            <td valign=top align=left>
+              <div ng-show="!dataset">Loading...</div>
+              <div ng-controller="pipeCtrl" ng-show="dataset" ng-cloak>
+                <table st-safe-src="dataset" st-table="displayed" class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th st-ratio="20" st-sort="ProcessName" align="center" ng-class="{'pointer-hover': 1==true}">
+                      Process
+                    </th>
+                    <th st-ratio="40" st-sort="Program" align="center" ng-class="{'pointer-hover': 1==true}">Program
+                    </th>
+                    <th st-ratio="10" st-sort="Reads" align="center" ng-class="{'pointer-hover': 1==true}">Reads</th>
+                    <th st-ratio="10" st-sort="Writes" align="center" ng-class="{'pointer-hover': 1==true}">Write</th>
+                    <th st-ratio="10" st-sort="Opens" align="center" ng-class="{'pointer-hover': 1==true}">Opens</th>
+                    <th st-ratio="10" st-sort="Reads" align="center" ng-class="{'pointer-hover': 1==true}">Lock Wait
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td colspan=4 ng-hide="displayed.length" align="center">No Data</td>
+                  </tr>
+                  <tr ng-repeat="row in displayed">
+                    <td style="padding: 2px" st-ratio="20" align="left">{{row.ProcessName}}</td>
+                    <td style="padding: 2px" st-ratio="40" align="left"><a
+                      ng-href="https://www.remoteanalyst.com/NewBrowser/DataBrowserProcess.aspx?programName={{row.Program}}&CPUNum={{CPUNum}}&systemserial={{SystemSerial}}&systemname={{System}}&starttime={{StartTimeStr}}&hideIPU=false"
+                      target="_blank">{{row.Program}}</a></td>
+                    <td style="padding: 2px" st-ratio="10" align="right">{{row.Reads | number:2}}</td>
+                    <td style="padding: 2px" st-ratio="10" align="right">{{row.Writes | number:2}}</td>
+                    <td style="padding: 2px" st-ratio="10" align="right">{{row.Opens}}</td>
+                    <td style="padding: 2px" st-ratio="10" align="right">{{row.LockWaits}}</td>
+                  </tr>
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <td st-pagination="" st-items-by-page="5" colspan="6" style="margin:0px">
+                    </td>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+

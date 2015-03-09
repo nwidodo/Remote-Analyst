@@ -1,0 +1,188 @@
+<div>
+  <div ng-show="!showContent">Loading...</div>
+  <div ng-show="showError" ng-cloak><span ng-bind-html="errorMsg | to_trusted"/></div>
+  <table width="98%" ng-cloak ng-show="showContent">
+    <tr>
+      <td valign="top" width="300px">
+        <table>
+          <tr>
+            <td>
+              <div class="panel panel-default" width="290px" style="margin-bottom:5px">
+                <div class="panel-heading">
+
+                  <h4>{{System}}.{{ProcessName || "N/A" }}</h4>
+
+                  <div width="100%" align="right"><a class="btn btn-success btn-sm" href ng-click="downloadFile()"
+                                                     style="font-size: 10px"><i class="fa fa-file-excel-o"></i> Export
+                    to Excel</a></div>
+                </div>
+                <div class="panel-body">
+                  <table width="100%">
+                    <tr>
+                      <td colspan=3 valign=top style="font-weight:bold;"><h6><a
+                        ng-href="https://www.remoteanalyst.com/NewBrowser/DataBrowserProcess.aspx?programName={{Program}}&CPUNum={{CPUNum}}&systemserial={{SystemSerial}}&systemname={{System}}&starttime={{StartTimeStr}}&hideIPU=false">{{Program}}</a>
+                      </h6></td>
+                    </tr>
+
+                    <tr>
+                      <td><b>Priority</b> : <a
+                        ng-href="https://www.remoteanalyst.com/NewBrowser/DataBrowserProcess.aspx?priority={{Priority}}&CPUNum={{CPUNum}}&systemserial={{SystemSerial}}&systemname={{System}}&starttime={{StartTimeStr}}&hideIPU=false"
+                        target="_blank">{{Priority}}</a></td>
+                      <td><b>CPU</b> : {{CPUNum}}</td>
+                      <td align="right"><b>Pin</b> : {{Pin}}</td>
+                    </tr>
+                  </table>
+                </div>
+                <div class="panel-footer">
+                  <table>
+                    <tr>
+                      <td valign=top style="font-weight:bold">Ancestor:</td>
+                    </tr>
+                    <tr>
+                      <td valign=top style="padding: 0px">
+                        <div ng-if="Ancestor != 'N/A'">{{Ancestor}} ({{AncestorCPU}}, {{AncestorPin}})</div>
+                        <div ng-if="Ancestor == 'N/A'">{{Ancestor}}</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign=top style="padding: 0px">{{AncestorProgramName}}</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width:300px">
+              <div class="panel panel-default" width="290px" style="margin-bottom:0">
+                <div class="panel-body">
+
+                  <table width="100%">
+                    <tr>
+                      <td align="left">
+                        <ul class="pager" style="width: 100%;margin:5px 0; text-align: left">
+                          <li class="previous" ng-class="{'previous disabled': firstIntv}"><a href
+                                                                                              ng-click="goIntv($event,-1)">←
+                            Prev</a></li>
+                        </ul>
+                      </td>
+                      <td></td>
+                      <td align="right">
+                        <ul class="pager" style="width: 100%;margin:5px 0; text-align: right">
+                          <li class="next" ng-class="{'next disabled': lastIntv}"><a href ng-click="goIntv($event,1)">Next
+                            →</a></li>
+                        </ul>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign=top style="font-weight:bold">From</td>
+                      <td valign=top>:</td>
+                      <td valign=top>{{FromTimestampStr | date:'MMM d yyyy, HH:mm'}}</td>
+                    </tr>
+                    <tr style="border-bottom:solid silver 1px; ">
+                      <td valign=top style="font-weight:bold">To</td>
+                      <td valign=top>:</td>
+                      <td valign=top>{{ToTimestampStr | date:'MMM d yyyy, HH:mm'}}</td>
+                    </tr>
+                    <tr>
+                      <td valign=top style="font-weight:bold">CPU Busy</td>
+                      <td valign=top>:</td>
+                      <td valign=top>{{cpuBusy}} %</td>
+                    </tr>
+                    <tr>
+                      <td valign=top style="font-weight:bold">Memory</td>
+                      <td valign=top>:</td>
+                      <td valign=top>{{Memory|number}} MB
+                        <br>(Max: {{TotalMemory|number}} MB)
+                      </td>
+                    </tr>
+                    <td style="font-weight:bold">Messages</td>
+                    <td>:</td>
+                    <td>{{Messages|number}}/Sec</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight:bold">Dispatches</td>
+                      <td>:</td>
+                      <td>{{Displatches|number}}/Sec</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight:bold">Page Faults</td>
+                      <td>:</td>
+                      <td>{{PageFaults|number}}/Sec</td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td valign="top">
+        <table width="100%">
+          <tr>
+            <td>
+              <div>
+                <div id="container" style="min-width: 510px; height: 310px; margin: 0 "></div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td align="right">
+              <div class="checkbox" style="margin:0">
+                <label>
+                  <input type="checkbox" ng-click="toggleAxis($event,'cpu')" id="toggleCpu" value="1"> Scale CPU Busy
+                  (%)
+                  Axis
+                </label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <label>
+                  <input type="checkbox" ng-click="toggleAxis($event,'mem')" id="toggleMem" value="1"> Scale Memory (MB)
+                  Axis
+                </label>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td valign=top align=left>
+              <div ng-show="!dataset">Loading...</div>
+              <div ng-controller="pipeCtrl" ng-show="dataset" ng-cloak>
+                <table st-safe-src="dataset" st-table="displayed" class="table table-striped">
+                  <thead>
+                  <tr>
+                    <th st-ratio="60" st-sort="FileName" align="center" ng-class="{'pointer-hover': 1==true}">File</th>
+                    <th st-ratio="10" st-sort="ReadPerSec" align="center" ng-class="{'pointer-hover': 1==true}">
+                      Read/Sec
+                    </th>
+                    <th st-ratio="10" st-sort="WritePerSec" align="center" ng-class="{'pointer-hover': 1==true}">
+                      Write/Sec
+                    </th>
+                    <th st-ratio="10" st-sort="Opens" align="center" ng-class="{'pointer-hover': 1==true}">Opens</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td colspan=4 ng-hide="displayed.length" align="center">No Data</td>
+                  </tr>
+                  <tr ng-repeat="row in displayed">
+                    <td style="padding: 3px" st-ratio="60" align="left"><a
+                      ng-href="/#/file?ProcessName={{ProcessName}}&CPUNum={{CPUNum}}&Pin={{Pin}}&SystemSerial={{SystemSerial}}&SystemName={{System}}&StartTime={{FromTimestamp/1000}}&FileName={{row.FileName|urlEncode}}"
+                      target="_blank">{{row.FileName}}</a></td>
+                    <td style="padding: 3px" st-ratio="10" align="right">{{row.ReadPerSec | number:2}}</td>
+                    <td style="padding: 3px" st-ratio="10" align="right">{{row.WritePerSec | number:2}}</td>
+                    <td style="padding: 3px" st-ratio="10" align="right">{{row.Opens}}</td>
+                  </tr>
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <td st-pagination="" st-items-by-page="5" colspan="4" style="margin:0px">
+                    </td>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
