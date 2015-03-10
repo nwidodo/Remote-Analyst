@@ -2,7 +2,7 @@
  * Created by Nurwati on 3/10/15.
  */
 "use strict";
-angular.module('main').controller('FileCtrl', ['$scope', '$http', '$filter', '$location','ngProgress','apiService', function ($scope, $http, $filter, $location, ngProgress, apiService) {
+angular.module('main').controller('FileCtrl', ['$scope','$filter', '$location','ngProgress','apiService', function ($scope, $filter, $location, ngProgress, apiService) {
 
   ngProgress.color("#8AB8E6");
 

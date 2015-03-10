@@ -1,8 +1,8 @@
 "use strict";
-angular.module('main').controller('pipeCtrl', ['$scope', '$http', function ($scope, $http) {
+angular.module('main').controller('pipeCtrl', function () {
 
   var self = this;
-}]);
+});
 
 
 

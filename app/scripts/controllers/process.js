@@ -1,5 +1,5 @@
 "use strict";
-angular.module('main').controller('ProcCtrl', ['$scope', '$http', '$filter', '$location','ngProgress','apiService', function ($scope, $http, $filter, $location, ngProgress, apiService) {
+angular.module('main').controller('ProcCtrl', ['$scope', '$filter', '$location','ngProgress','apiService', function ($scope, $filter, $location, ngProgress, apiService) {
 
 
   var data = [];
